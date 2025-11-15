@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {cacheLife} from "next/cache";
 
 import {getBlogPosts, getCategories, getFeaturedBlogPosts} from "@/api";
 
@@ -19,6 +20,12 @@ const getBlogStats = async () => {
 
 export default async function HomePage() {
   "use cache";
+
+  cacheLife({
+    stale: 60,
+    revalidate: 60,
+  }); // 1 minute, pagina estatica
+
   const [featuredPosts, stats] = await Promise.all([getFeaturedBlogPosts(), getBlogStats()]);
 
   return (
