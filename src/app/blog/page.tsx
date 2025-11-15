@@ -1,17 +1,19 @@
+import {Suspense} from "react";
+
 import {getBlogPosts, getCategories} from "@/api";
 
-import BlogPosts from "@/components/blog-posts";
+import BlogPosts, {BlogPostsSkeleton} from "@/components/blog-posts";
 import CategoryFilter from "@/components/category-filter";
 
-export const dynamic = "force-dynamic";
+async function SearchResults({searchParams}: {searchParams: {category?: string}}) {
+  const {category} = searchParams;
+  const posts = await getBlogPosts(category);
 
-export default async function BlogPage({
-  searchParams,
-}: {
-  searchParams: Promise<{category?: string}>;
-}) {
-  const {category} = await searchParams;
-  const [categories, posts] = await Promise.all([getCategories(), getBlogPosts(category)]);
+  return <BlogPosts posts={posts} />;
+}
+
+export default async function BlogPage({searchParams}: {searchParams: {category?: string}}) {
+  const categories = await getCategories();
 
   return (
     <div className="container mx-auto flex flex-col gap-8 px-4 py-8">
@@ -22,7 +24,9 @@ export default async function BlogPage({
 
       <CategoryFilter categories={categories} />
 
-      <BlogPosts posts={posts} />
+      <Suspense fallback={<BlogPostsSkeleton />}>
+        <SearchResults searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }

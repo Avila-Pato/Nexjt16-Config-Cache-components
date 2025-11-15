@@ -106,6 +106,7 @@ export async function getFeaturedBlogPosts(category?: string): Promise<BlogPost[
 }
 
 export async function getCategories(): Promise<Category[]> {
+  "use cache";
   console.info("[API] Fetching categories (250ms delay)");
 
   await delay(250);
