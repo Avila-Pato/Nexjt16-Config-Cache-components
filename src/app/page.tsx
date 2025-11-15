@@ -4,9 +4,8 @@ import {getBlogPosts, getCategories, getFeaturedBlogPosts} from "@/api";
 
 import BlogPosts from "@/components/blog-posts";
 
-export const dynamic = "force-static";
-
-export const revalidate = 60;
+// export const dynamic = "force-static";
+// export const revalidate = 60;
 
 const getBlogStats = async () => {
   const [posts, categories] = await Promise.all([getBlogPosts(), getCategories()]);
@@ -19,6 +18,7 @@ const getBlogStats = async () => {
 };
 
 export default async function HomePage() {
+  "use cache";
   const [featuredPosts, stats] = await Promise.all([getFeaturedBlogPosts(), getBlogStats()]);
 
   return (
